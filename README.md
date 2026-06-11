@@ -135,7 +135,7 @@ git identity -h | --help
 Requires the .NET 10 SDK.
 
 ```cmd
-cd git-identity-dotnet
+cd git-identity-windows
 
 :: Default: NativeAOT single-file, ~1.8 MB
 dotnet publish src/GitIdentity.csproj -c Release -r win-x64 -o publish-aot
@@ -171,7 +171,7 @@ The project has a project-local `NuGet.config` that overrides the corporate-wide
 ## Files
 
 ```
-git-identity-dotnet\
+git-identity-windows\
   src\
     GitIdentity.csproj    ; SDK-style project, net10.0-windows, NativeAOT profile
     Program.cs            ; entry point + argument dispatch
