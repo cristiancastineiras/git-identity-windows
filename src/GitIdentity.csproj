@@ -1,0 +1,71 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <TargetFramework>net10.0-windows</TargetFramework>
+    <RootNamespace>GitIdentity</RootNamespace>
+    <AssemblyName>git-identity</AssemblyName>
+    <Nullable>enable</Nullable>
+    <LangVersion>latest</LangVersion>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
+    <DebugType>none</DebugType>
+    <DebugSymbols>false</DebugSymbols>
+    <InvariantGlobalization>true</InvariantGlobalization>
+
+    <!-- GC: workstation mode, no concurrent, no server GC. This trims
+         the GC working set and reduces background pauses. We don't care
+         about throughput on this CLI; we care about cold start. -->
+    <ServerGarbageCollection>false</ServerGarbageCollection>
+    <ConcurrentGarbageCollection>false</ConcurrentGarbageCollection>
+    <RetainVMGarbageCollection>false</RetainVMGarbageCollection>
+
+    <!-- JIT: tiered compilation + PGO. Cold-path methods tier up to optimized
+         code on first invocation. PGO uses runtime profile data. -->
+    <TieredCompilation>true</TieredCompilation>
+    <TieredPGO>true</TieredPGO>
+
+    <!--
+      Two build profiles:
+
+      1) `dotnet publish -c Release` (no flags) => framework-dependent
+         single-file, ~200 KB, requires .NET 10 desktop runtime on the
+         target machine. Cold start ~190 ms. This is the default and
+         is what 99% of users want.
+
+      2) `dotnet publish -c Release -r win-x64` (with self-contained set) => ~17 MB
+         single-file with the .NET runtime bundled. Cold start ~700 ms.
+         Use this when distributing to a machine that does not have
+         .NET 10 installed.
+
+      NativeAOT (`PublishAot=true`) would push the size to ~1-2 MB and
+      cold start to ~50 ms, but it requires the Microsoft.DotNet.ILCompiler
+      package, which is currently blocked by a corporate NuGet
+      package-source mapping. The code in this project is kept
+      NativeAOT-compatible (no reflection, no dynamic loading, no
+      System.Reflection.Emit) so flipping the switch is a one-line change
+      once the package becomes available.
+    -->
+    <PublishSingleFile>true</PublishSingleFile>
+    <SelfContained>true</SelfContained>
+    <EnableUnsafeBinaryFormatterSerialization>false</EnableUnsafeBinaryFormatterSerialization>
+    <EnableUnsafeUTF7Encoding>false</EnableUnsafeUTF7Encoding>
+    <HttpActivityPropagationSupport>false</HttpActivityPropagationSupport>
+
+    <!--
+      NativeAOT: produce a real native binary, no CLR, no JIT. The size
+      drops to ~1-3 MB and cold start to ~50 ms. The Microsoft.DotNet.ILCompiler
+      package is required; we override the corporate NuGet feeds via
+      NuGet.config in the project root to be able to fetch it.
+    -->
+    <PublishAot>true</PublishAot>
+    <IlcOptimizationPreference>Size</IlcOptimizationPreference>
+    <IlcGenerateStackTraceData>false</IlcGenerateStackTraceData>
+    <IlcGenerateMetadataLog>false</IlcGenerateMetadataLog>
+    <IlcOptimizationLevel>Full</IlcOptimizationLevel>
+    <IlcFoldIdenticalMethodBodies>true</IlcFoldIdenticalMethodBodies>
+    <IlcDisableReflection>true</IlcDisableReflection>
+    <ApplicationIcon>..\logo.ico</ApplicationIcon>
+  </PropertyGroup>
+
+</Project>
