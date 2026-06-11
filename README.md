@@ -198,7 +198,7 @@ git-identity-windows\
       git-identity.ps1     ; PowerShell shim
       README.md            ; installer-specific instructions
   README.md               ; this file
-  LICENSE                 ; MIT
+  LICENSE                 ; WTFPL
 ```
 
 ## Compatibility
@@ -217,4 +217,4 @@ git-identity-windows\
 
 ## License
 
-MIT (same as upstream).
+WTFPL 
